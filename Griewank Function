@@ -1,0 +1,77 @@
+%% Griewank Function
+
+xMin = -5;
+xMax =  5;
+
+%% Training data
+
+trainStep = 0.3;
+xTrain = xMin:trainStep:xMax;
+
+[XTrainGrid, YTrainGrid] = meshgrid(xTrain, xTrain);
+[numTrainRows, numTrainCols] = size(XTrainGrid);
+
+numTrainSamples = numTrainRows * numTrainCols;
+
+trainSurface = zeros(numTrainRows, numTrainCols);
+trainTargets = zeros(numTrainSamples, 1);
+trainInputs = zeros(numTrainSamples, 2);
+
+sampleIndex = 1;
+
+for row = 1:numTrainRows
+    for col = 1:numTrainCols
+
+        trainInputs(sampleIndex, :) = ...
+            [XTrainGrid(row,col), YTrainGrid(row,col)];
+
+        trainSurface(row,col) = ...
+            (XTrainGrid(row,col)^2 + YTrainGrid(row,col)^2) / 4000 ...
+            - cos(XTrainGrid(row,col)) ...
+            * cos(YTrainGrid(row,col) / sqrt(2)) ...
+            + 1;
+
+        trainTargets(sampleIndex) = trainSurface(row,col);
+
+        sampleIndex = sampleIndex + 1;
+    end
+end
+
+%% Testing data
+
+testStep = 0.4;
+xTest = xMin:testStep:xMax;
+
+[XTestGrid, YTestGrid] = meshgrid(xTest, xTest);
+[numTestRows, numTestCols] = size(XTestGrid);
+
+numTestSamples = numTestRows * numTestCols;
+
+testSurface = zeros(numTestRows, numTestCols);
+testTargets = zeros(numTestSamples, 1);
+testInputs = zeros(numTestSamples, 2);
+
+sampleIndex = 1;
+
+for row = 1:numTestRows
+    for col = 1:numTestCols
+
+        testInputs(sampleIndex, :) = ...
+            [XTestGrid(row,col), YTestGrid(row,col)];
+
+        testSurface(row,col) = ...
+            (XTestGrid(row,col)^2 + YTestGrid(row,col)^2) / 4000 ...
+            - cos(XTestGrid(row,col)) ...
+            * cos(YTestGrid(row,col) / sqrt(2)) ...
+            + 1;
+
+        testTargets(sampleIndex) = testSurface(row,col);
+
+        sampleIndex = sampleIndex + 1;
+    end
+end
+
+%% Dataset information
+
+fprintf('Number of training samples: %d\n', numTrainSamples);
+fprintf('Number of testing samples : %d\n', numTestSamples);
