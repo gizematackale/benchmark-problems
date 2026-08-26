@@ -1,0 +1,62 @@
+%% Peaks Function
+
+%% Training data
+
+trainadim = 0.4;
+xTrain = -3:trainadim:3;
+
+[X, Y] = meshgrid(xTrain, xTrain);
+[satir, sutun] = size(X);
+
+N = satir * sutun;
+
+Zd = zeros(satir, sutun);
+Zdornek = zeros(N, 1);
+Xornek = zeros(N, 2);
+
+say = 1;
+
+for j = 1:satir
+    for k = 1:sutun
+
+        Xornek(say, :) = [X(j,k), Y(j,k)];
+
+        Zd(j,k) = peaks(X(j,k), Y(j,k));
+        Zdornek(say) = Zd(j,k);
+
+        say = say + 1;
+    end
+end
+
+%% Testing data
+
+testadim = 0.5;
+xTest = -3:testadim:3;
+
+[Xt, Yt] = meshgrid(xTest, xTest);
+[satirt, sutunt] = size(Xt);
+
+Nt = satirt * sutunt;
+
+Zdtest = zeros(satirt, sutunt);
+Zdornektest = zeros(Nt, 1);
+Xornektest = zeros(Nt, 2);
+
+sayt = 1;
+
+for j = 1:satirt
+    for k = 1:sutunt
+
+        Xornektest(sayt, :) = [Xt(j,k), Yt(j,k)];
+
+        Zdtest(j,k) = peaks(Xt(j,k), Yt(j,k));
+        Zdornektest(sayt) = Zdtest(j,k);
+
+        sayt = sayt + 1;
+    end
+end
+
+%% Dataset information
+
+fprintf('Number of training samples: %d\n', N);
+fprintf('Number of testing samples : %d\n', Nt);
