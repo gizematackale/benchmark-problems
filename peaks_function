@@ -1,62 +1,71 @@
 %% Peaks Function
 
+xMin = -3;
+xMax =  3;
+
 %% Training data
 
-trainadim = 0.4;
-xTrain = -3:trainadim:3;
+trainStep = 0.4;
+xTrain = xMin:trainStep:xMax;
 
-[X, Y] = meshgrid(xTrain, xTrain);
-[satir, sutun] = size(X);
+[XTrainGrid, YTrainGrid] = meshgrid(xTrain, xTrain);
+[numTrainRows, numTrainCols] = size(XTrainGrid);
 
-N = satir * sutun;
+numTrainSamples = numTrainRows * numTrainCols;
 
-Zd = zeros(satir, sutun);
-Zdornek = zeros(N, 1);
-Xornek = zeros(N, 2);
+trainSurface = zeros(numTrainRows, numTrainCols);
+trainTargets = zeros(numTrainSamples, 1);
+trainInputs = zeros(numTrainSamples, 2);
 
-say = 1;
+sampleIndex = 1;
 
-for j = 1:satir
-    for k = 1:sutun
+for row = 1:numTrainRows
+    for col = 1:numTrainCols
 
-        Xornek(say, :) = [X(j,k), Y(j,k)];
+        xValue = XTrainGrid(row, col);
+        yValue = YTrainGrid(row, col);
 
-        Zd(j,k) = peaks(X(j,k), Y(j,k));
-        Zdornek(say) = Zd(j,k);
+        trainInputs(sampleIndex, :) = [xValue, yValue];
 
-        say = say + 1;
+        trainSurface(row, col) = peaks(xValue, yValue);
+        trainTargets(sampleIndex) = trainSurface(row, col);
+
+        sampleIndex = sampleIndex + 1;
     end
 end
 
 %% Testing data
 
-testadim = 0.5;
-xTest = -3:testadim:3;
+testStep = 0.5;
+xTest = xMin:testStep:xMax;
 
-[Xt, Yt] = meshgrid(xTest, xTest);
-[satirt, sutunt] = size(Xt);
+[XTestGrid, YTestGrid] = meshgrid(xTest, xTest);
+[numTestRows, numTestCols] = size(XTestGrid);
 
-Nt = satirt * sutunt;
+numTestSamples = numTestRows * numTestCols;
 
-Zdtest = zeros(satirt, sutunt);
-Zdornektest = zeros(Nt, 1);
-Xornektest = zeros(Nt, 2);
+testSurface = zeros(numTestRows, numTestCols);
+testTargets = zeros(numTestSamples, 1);
+testInputs = zeros(numTestSamples, 2);
 
-sayt = 1;
+sampleIndex = 1;
 
-for j = 1:satirt
-    for k = 1:sutunt
+for row = 1:numTestRows
+    for col = 1:numTestCols
 
-        Xornektest(sayt, :) = [Xt(j,k), Yt(j,k)];
+        xValue = XTestGrid(row, col);
+        yValue = YTestGrid(row, col);
 
-        Zdtest(j,k) = peaks(Xt(j,k), Yt(j,k));
-        Zdornektest(sayt) = Zdtest(j,k);
+        testInputs(sampleIndex, :) = [xValue, yValue];
 
-        sayt = sayt + 1;
+        testSurface(row, col) = peaks(xValue, yValue);
+        testTargets(sampleIndex) = testSurface(row, col);
+
+        sampleIndex = sampleIndex + 1;
     end
 end
 
 %% Dataset information
 
-fprintf('Number of training samples: %d\n', N);
-fprintf('Number of testing samples : %d\n', Nt);
+fprintf('Number of training samples: %d\n', numTrainSamples);
+fprintf('Number of testing samples : %d\n', numTestSamples);
