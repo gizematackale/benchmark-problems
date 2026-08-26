@@ -22,18 +22,16 @@ sampleIndex = 1;
 for row = 1:numTrainRows
     for col = 1:numTrainCols
 
-        xValue = XTrainGrid(row, col);
-        yValue = YTrainGrid(row, col);
+        trainInputs(sampleIndex, :) = ...
+            [XTrainGrid(row,col), YTrainGrid(row,col)];
 
-        trainInputs(sampleIndex, :) = [xValue, yValue];
+        trainSurface(row,col) = ...
+            -((1 + cos(12 * sqrt( ...
+            XTrainGrid(row,col)^2 + YTrainGrid(row,col)^2))) ...
+            / (0.5 * (XTrainGrid(row,col)^2 + ...
+            YTrainGrid(row,col)^2) + 2));
 
-        squaredRadius = xValue^2 + yValue^2;
-
-        trainSurface(row, col) = ...
-            -(1 + cos(12 * sqrt(squaredRadius))) ...
-            / (0.5 * squaredRadius + 2);
-
-        trainTargets(sampleIndex) = trainSurface(row, col);
+        trainTargets(sampleIndex) = trainSurface(row,col);
 
         sampleIndex = sampleIndex + 1;
     end
@@ -58,18 +56,16 @@ sampleIndex = 1;
 for row = 1:numTestRows
     for col = 1:numTestCols
 
-        xValue = XTestGrid(row, col);
-        yValue = YTestGrid(row, col);
+        testInputs(sampleIndex, :) = ...
+            [XTestGrid(row,col), YTestGrid(row,col)];
 
-        testInputs(sampleIndex, :) = [xValue, yValue];
+        testSurface(row,col) = ...
+            -((1 + cos(12 * sqrt( ...
+            XTestGrid(row,col)^2 + YTestGrid(row,col)^2))) ...
+            / (0.5 * (XTestGrid(row,col)^2 + ...
+            YTestGrid(row,col)^2) + 2));
 
-        squaredRadius = xValue^2 + yValue^2;
-
-        testSurface(row, col) = ...
-            -(1 + cos(12 * sqrt(squaredRadius))) ...
-            / (0.5 * squaredRadius + 2);
-
-        testTargets(sampleIndex) = testSurface(row, col);
+        testTargets(sampleIndex) = testSurface(row,col);
 
         sampleIndex = sampleIndex + 1;
     end
