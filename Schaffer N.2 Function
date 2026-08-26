@@ -1,0 +1,83 @@
+%% Schaffer N.2 Function
+
+xMin = -2;
+xMax =  2;
+
+%% Training data
+
+trainStep = 0.1;
+xTrain = xMin:trainStep:xMax;
+
+[XTrainGrid, YTrainGrid] = meshgrid(xTrain, xTrain);
+[numTrainRows, numTrainCols] = size(XTrainGrid);
+
+numTrainSamples = numTrainRows * numTrainCols;
+
+trainSurface = zeros(numTrainRows, numTrainCols);
+trainTargets = zeros(numTrainSamples, 1);
+trainInputs = zeros(numTrainSamples, 2);
+
+sampleIndex = 1;
+
+for row = 1:numTrainRows
+    for col = 1:numTrainCols
+
+        xValue = XTrainGrid(row, col);
+        yValue = YTrainGrid(row, col);
+
+        trainInputs(sampleIndex, :) = [xValue, yValue];
+
+        numerator = sin(xValue^2 - yValue^2)^2 - 0.5;
+        denominator = ...
+            (1 + 0.001 * (xValue^2 + yValue^2))^2;
+
+        trainSurface(row, col) = ...
+            0.5 + numerator / denominator;
+
+        trainTargets(sampleIndex) = trainSurface(row, col);
+
+        sampleIndex = sampleIndex + 1;
+    end
+end
+
+%% Testing data
+
+testStep = 0.2;
+xTest = xMin:testStep:xMax;
+
+[XTestGrid, YTestGrid] = meshgrid(xTest, xTest);
+[numTestRows, numTestCols] = size(XTestGrid);
+
+numTestSamples = numTestRows * numTestCols;
+
+testSurface = zeros(numTestRows, numTestCols);
+testTargets = zeros(numTestSamples, 1);
+testInputs = zeros(numTestSamples, 2);
+
+sampleIndex = 1;
+
+for row = 1:numTestRows
+    for col = 1:numTestCols
+
+        xValue = XTestGrid(row, col);
+        yValue = YTestGrid(row, col);
+
+        testInputs(sampleIndex, :) = [xValue, yValue];
+
+        numerator = sin(xValue^2 - yValue^2)^2 - 0.5;
+        denominator = ...
+            (1 + 0.001 * (xValue^2 + yValue^2))^2;
+
+        testSurface(row, col) = ...
+            0.5 + numerator / denominator;
+
+        testTargets(sampleIndex) = testSurface(row, col);
+
+        sampleIndex = sampleIndex + 1;
+    end
+end
+
+%% Dataset information
+
+fprintf('Number of training samples: %d\n', numTrainSamples);
+fprintf('Number of testing samples : %d\n', numTestSamples);
