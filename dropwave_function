@@ -1,0 +1,73 @@
+%% Dropwave Function
+
+xmin = -2;
+xmax =  2;
+
+%% Training data
+
+trainadim = 0.1;
+xTrain = xmin:trainadim:xmax;
+
+[X, Y] = meshgrid(xTrain, xTrain);
+[satir, sutun] = size(X);
+
+N = satir * sutun;
+
+Zd = zeros(satir, sutun);
+Zdornek = zeros(N, 1);
+Xornek = zeros(N, 2);
+
+say = 1;
+
+for j = 1:satir
+    for k = 1:sutun
+
+        Xornek(say, :) = [X(j,k), Y(j,k)];
+
+        r2 = X(j,k)^2 + Y(j,k)^2;
+
+        Zd(j,k) = -(1 + cos(12 * sqrt(r2))) ...
+                  / (0.5 * r2 + 2);
+
+        Zdornek(say) = Zd(j,k);
+
+        say = say + 1;
+    end
+end
+
+%% Testing data
+
+testadim = 0.2;
+xTest = xmin:testadim:xmax;
+
+[Xt, Yt] = meshgrid(xTest, xTest);
+[satirt, sutunt] = size(Xt);
+
+Nt = satirt * sutunt;
+
+Zdtest = zeros(satirt, sutunt);
+Zdornektest = zeros(Nt, 1);
+Xornektest = zeros(Nt, 2);
+
+sayt = 1;
+
+for j = 1:satirt
+    for k = 1:sutunt
+
+        Xornektest(sayt, :) = [Xt(j,k), Yt(j,k)];
+
+        r2test = Xt(j,k)^2 + Yt(j,k)^2;
+
+        Zdtest(j,k) = -(1 + cos(12 * sqrt(r2test))) ...
+                      / (0.5 * r2test + 2);
+
+        Zdornektest(sayt) = Zdtest(j,k);
+
+        sayt = sayt + 1;
+    end
+end
+
+%% Dataset information
+
+fprintf('Number of training samples: %d\n', N);
+fprintf('Number of testing samples : %d\n', Nt);
