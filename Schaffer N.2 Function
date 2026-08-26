@@ -22,19 +22,20 @@ sampleIndex = 1;
 for row = 1:numTrainRows
     for col = 1:numTrainCols
 
-        xValue = XTrainGrid(row, col);
-        yValue = YTrainGrid(row, col);
+        trainInputs(sampleIndex, :) = ...
+            [XTrainGrid(row,col), YTrainGrid(row,col)];
 
-        trainInputs(sampleIndex, :) = [xValue, yValue];
+        factor1 = ...
+            sin(XTrainGrid(row,col)^2 - ...
+            YTrainGrid(row,col)^2)^2 - 0.5;
 
-        numerator = sin(xValue^2 - yValue^2)^2 - 0.5;
-        denominator = ...
-            (1 + 0.001 * (xValue^2 + yValue^2))^2;
+        factor2 = ...
+            (1 + 0.001 * (XTrainGrid(row,col)^2 + ...
+            YTrainGrid(row,col)^2))^2;
 
-        trainSurface(row, col) = ...
-            0.5 + numerator / denominator;
+        trainSurface(row,col) = 0.5 + factor1 / factor2;
 
-        trainTargets(sampleIndex) = trainSurface(row, col);
+        trainTargets(sampleIndex) = trainSurface(row,col);
 
         sampleIndex = sampleIndex + 1;
     end
@@ -59,19 +60,21 @@ sampleIndex = 1;
 for row = 1:numTestRows
     for col = 1:numTestCols
 
-        xValue = XTestGrid(row, col);
-        yValue = YTestGrid(row, col);
+        testInputs(sampleIndex, :) = ...
+            [XTestGrid(row,col), YTestGrid(row,col)];
 
-        testInputs(sampleIndex, :) = [xValue, yValue];
+        factor1Test = ...
+            sin(XTestGrid(row,col)^2 - ...
+            YTestGrid(row,col)^2)^2 - 0.5;
 
-        numerator = sin(xValue^2 - yValue^2)^2 - 0.5;
-        denominator = ...
-            (1 + 0.001 * (xValue^2 + yValue^2))^2;
+        factor2Test = ...
+            (1 + 0.001 * (XTestGrid(row,col)^2 + ...
+            YTestGrid(row,col)^2))^2;
 
-        testSurface(row, col) = ...
-            0.5 + numerator / denominator;
+        testSurface(row,col) = ...
+            0.5 + factor1Test / factor2Test;
 
-        testTargets(sampleIndex) = testSurface(row, col);
+        testTargets(sampleIndex) = testSurface(row,col);
 
         sampleIndex = sampleIndex + 1;
     end
